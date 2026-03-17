@@ -17,14 +17,21 @@ function Login() {
     setError("");
     setLoading(true);
 
+    const enteredUsername = username.trim().toLowerCase();
+    const enteredPassword = password.trim();
+
     const snap = await getDocs(collection(db, "users"));
     let foundUser = null;
 
     snap.forEach((u) => {
       const data = u.data();
+
+      const dbUsername = data.username?.trim().toLowerCase();
+      const dbPassword = data.password?.trim();
+
       if (
-        data.username === username &&
-        data.password === password &&
+        dbUsername === enteredUsername &&
+        dbPassword === enteredPassword &&
         data.role === role
       ) {
         foundUser = data;
@@ -37,7 +44,9 @@ function Login() {
       localStorage.setItem("user", JSON.stringify(foundUser));
       navigate(role === "admin" ? "/admin" : "/student");
     } else {
-      setError("Invalid credentials. Please check your username, password and role.");
+      setError(
+        "Invalid credentials. Please check your username, password and role."
+      );
     }
   }
 
@@ -48,6 +57,7 @@ function Login() {
   return (
     <div className="auth-root">
       <div className="auth-card">
+
         {/* Brand */}
         <div className="auth-brand">
           <span className="auth-logo">⚡</span>
@@ -60,13 +70,18 @@ function Login() {
         {/* Role Toggle */}
         <div className="auth-role-toggle">
           <button
-            className={`auth-role-btn ${role === "student" ? "auth-role-btn--active" : ""}`}
+            className={`auth-role-btn ${
+              role === "student" ? "auth-role-btn--active" : ""
+            }`}
             onClick={() => setRole("student")}
           >
             🎓 Student
           </button>
+
           <button
-            className={`auth-role-btn ${role === "admin" ? "auth-role-btn--active" : ""}`}
+            className={`auth-role-btn ${
+              role === "admin" ? "auth-role-btn--active" : ""
+            }`}
             onClick={() => setRole("admin")}
           >
             🛡️ Admin
@@ -75,6 +90,7 @@ function Login() {
 
         {/* Fields */}
         <div className="auth-fields">
+
           <div className="form-group">
             <label className="form-label">Username</label>
             <input
@@ -97,6 +113,7 @@ function Login() {
               onKeyDown={handleKey}
             />
           </div>
+
         </div>
 
         {error && <p className="auth-error">{error}</p>}
@@ -119,14 +136,19 @@ function Login() {
         {/* Demo Accounts */}
         <div className="auth-demo">
           <p className="auth-demo-title">Demo Accounts</p>
+
           <div className="auth-demo-row">
             <span className="auth-demo-badge">Admin</span>
             <span className="auth-demo-cred">admin / 1234</span>
           </div>
+
           <div className="auth-demo-row">
-            <span className="auth-demo-badge auth-demo-badge--student">Student</span>
+            <span className="auth-demo-badge auth-demo-badge--student">
+              Student
+            </span>
             <span className="auth-demo-cred">yatharth / 1234</span>
           </div>
+
         </div>
       </div>
 
